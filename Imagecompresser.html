@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Compressor</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      background: linear-gradient(135deg, #f4f4f4, #e0e0e0);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* Ad Container */
+    .ad-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 20px auto;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .ad-space {
+      width: 300px;
+      height: 250px;
+      background: #fff;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Image Compressor Container */
+    .compressor-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 300px;
+      height: 250px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    p {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    /* File Input and Button */
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .input-group input[type="file"] {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .input-group button {
+      padding: 8px;
+      background: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .input-group button:hover {
+      background: #005bb5;
+    }
+
+    /* Compressed Image Display */
+    .compressed-image {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: auto;
+    }
+
+    .compressed-image img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 5px;
+    }
+
+    /* Color Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .ad-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .ad-space {
+        width: 100%;
+        max-width: 300px; /* Maintain aspect ratio */
+        height: auto;
+        aspect-ratio: 300 / 250; /* Maintain 300x250 aspect ratio */
+        padding: 20px;
+      }
+
+      .compressor-container {
+        width: 100%;
+        max-width: 300px; /* Maintain aspect ratio */
+        height: auto;
+        aspect-ratio: 300 / 250; /* Maintain 300x250 aspect ratio */
+      }
+
+      h1 {
+        font-size: 18px;
+      }
+
+      p {
+        font-size: 12px;
+      }
+
+      .input-group input[type="file"],
+      .input-group button {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Ad Container (1 Ad Above) -->
+  <div class="ad-container">
+    <div class="ad-space">
+      <!-- Add your ad code here -->
+      <p>Ad Space (300x250)</p>
+    </div>
+  </div>
+
+  <!-- Image Compressor Container -->
+  <div class="compressor-container">
+    <h1>Image Compressor</h1>
+    <p>Upload an image to compress it.</p>
+    <div class="input-group">
+      <input type="file" id="image-input" accept="image/*">
+      <button onclick="compressImage()">Compress Image</button>
+    </div>
+    <div class="compressed-image" id="compressed-image">
+      <!-- Compressed image will be displayed here -->
+    </div>
+  </div>
+
+  <!-- Ad Container (1 Ad Below) -->
+  <div class="ad-container">
+    <div class="ad-space">
+      <!-- Add your ad code here -->
+      <p>Ad Space (300x250)</p>
+    </div>
+  </div>
+
+  <script>
+    // Function to compress image
+    function compressImage() {
+      const input = document.getElementById('image-input');
+      const compressedImageDiv = document.getElementById('compressed-image');
+
+      if (!input.files || input.files.length === 0) {
+        alert("Please select an image!");
+        return;
+      }
+
+      const file = input.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const img = new Image();
+        img.src = e.target.result;
+
+        img.onload = function () {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+
+          // Set canvas dimensions to the image dimensions
+          canvas.width = img.width;
+          canvas.height = img.height;
+
+          // Draw the image on the canvas
+          ctx.drawImage(img, 0, 0);
+
+          // Compress the image (adjust quality as needed)
+          canvas.toBlob(
+            (blob) => {
+              const compressedImg = document.createElement('img');
+              compressedImg.src = URL.createObjectURL(blob);
+              compressedImg.alt = "Compressed Image";
+
+              // Clear previous compressed image
+              compressedImageDiv.innerHTML = "";
+              compressedImageDiv.appendChild(compressedImg);
+            },
+            'image/jpeg', // You can change to 'image/png' if needed
+            0.7 // Quality (0.7 = 70% quality)
+          );
+        };
+      };
+
+      reader.readAsDataURL(file);
+    }
+  </script>
+</body>
+</html>
